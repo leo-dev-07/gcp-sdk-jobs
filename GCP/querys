@@ -1,0 +1,37 @@
+--1.	Escreva uma query que retorna a quantidade de linhas na tabela Sales.SalesOrderDetail pelo campo SalesOrderID, desde que tenham pelo menos três linhas de detalhes
+
+SELECT SalesOrderId,count(SalesOrderId) as qt FROM `projeto-rox-data-eng.bike_sales_1.sales_salesorderdetail` as sales_order_details
+group by 1;
+
+--2.	Escreva uma query que ligue as tabelas Sales.SalesOrderDetail, Sales.SpecialOfferProduct e Production.Product e retorne os 3 produtos (Name)
+--mais vendidos (pela soma de OrderQty), agrupados pelo número de dias para manufatura (DaysToManufacture).
+
+SELECT name,count(DaysToManufacture) as quantidade_de_dias_para_manufatura
+FROM `projeto-rox-data-eng.bike_sales_1.sales_salesorderdetail` as sales_order_details
+INNER JOIN `projeto-rox-data-eng.bike_sales_1.sales_specialofferproduct` as sales_special_offer_product
+        ON sales_special_offer_product.ProductID = sales_order_details.ProductID
+INNER JOIN `projeto-rox-data-eng.bike_sales_1.production_product` as production_product
+        ON production_product.ProductID = sales_special_offer_product.ProductID
+group by 1 order by sum(OrderQty) DESC LIMIT 3;
+
+--3.	Escreva uma query ligando as tabelas Person.Person, Sales.Customer e Sales.SalesOrderHeader de forma a obter uma lista de nomes de clientes e uma contagem de pedidos efetuados.
+
+SELECT CONCAT(person.FirstName ,' ',person.MiddleName,' ',person.LastName) as full_name, count(sales_order_header.SalesOrderID) as qt_pedidos FROM `projeto-rox-data-eng.bike_sales_1.person_person` as person
+INNER JOIN `projeto-rox-data-eng.bike_sales_1.sales_customer` as sales_customer ON sales_customer.CustomerID = person.BusinessEntityID
+INNER JOIN `projeto-rox-data-eng.bike_sales_1.sales_salesorderheader` as sales_order_header ON sales_order_header.CustomerID = sales_customer.CustomerID
+GROUP BY 1;
+
+--4.	Escreva uma query usando as tabelas Sales.SalesOrderHeader, Sales.SalesOrderDetail e Production.Product, de forma a obter a soma total de produtos (OrderQty) por ProductID e OrderDate.
+SELECT sum(OrderQty) as total ,sales_order_detale.ProductID,OrderDate
+FROM `projeto-rox-data-eng.bike_sales_1.sales_salesorderheader` as sales_order_header
+INNER JOIN `projeto-rox-data-eng.bike_sales_1.sales_salesorderdetail` as sales_order_detale ON sales_order_detale.SalesOrderID = sales_order_header.SalesOrderID
+INNER JOIN `projeto-rox-data-eng.bike_sales_1.production_product` as prod_prod ON prod_prod.ProductID = sales_order_detale.ProductID
+GROUP BY 2,3;
+
+--5.	Escreva uma query mostrando os campos SalesOrderID, OrderDate e TotalDue da tabela Sales.SalesOrderHeader. Obtenha apenas as linhas
+--onde a ordem tenha sido feita durante o mês de setembro/2011 e o total devido esteja acima de 1.000. Ordene pelo total devido decrescente.
+
+SELECT SalesOrderID,OrderDate,TotalDue
+FROM `projeto-rox-data-eng.bike_sales_1.sales_salesorderheader` as sales_order_header
+WHERE EXTRACT(MONTH FROM CAST(OrderDate AS DATE)) = 9 AND EXTRACT(YEAR FROM CAST(OrderDate AS DATE)) = 2011 AND TotalDue > 1000
+ORDER BY TotalDue DESC;
