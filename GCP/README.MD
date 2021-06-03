@@ -7,6 +7,7 @@ Razão da arquitetura escolhida:
     
     A ferramenta escolhida para guardar e analisar os dados foi o BigQuery. Ele nos dá fácil acesso e velocidade no processamento das consultas. Sem falar que ele
     tem uma exelente integração com a solução dada via SDK.
+    O link para o relatório é esse: https://datastudio.google.com/reporting/9ed43f36-4484-472e-94bb-53ca4997736c
     
     Para Exibir os dados graficamente foi escolhido o Google Data Studio. É uma ferramenta gratuita e com muitos recursos fáceis de serem utilizados
     
